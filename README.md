@@ -1,2 +1,2 @@
-# secure-eks-devsecops-pipeline 2
+# secure-eks-devsecops-pipeline
 Secure Microservice Deployment on AWS EKS

@@ -1,0 +1,28 @@
+# --- TERRAFORM ---
+# No subir la carpeta de binarios (ocupa mucho espacio y es específica de tu Fedora)
+.terraform/
+
+# No subir el ESTADO (Contiene información sensible de tu infraestructura en texto plano)
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# No subir el archivo de bloqueo de versiones
+.terraform.lock.hcl
+
+# --- VARIABLES Y SECRETOS ---
+# No subir archivos donde pongas passwords, tokens o llaves
+*.tfvars
+*.tfvars.json
+terraform.tfvars
+
+# --- LOGS Y TEMPORALES ---
+*.log
+.terraformrc
+terraform.rc
+
+# --- AWS & LOCAL ---
+# No subir tus credenciales locales de AWS ni carpetas de entorno
+.aws/
+.env
+.venv/
