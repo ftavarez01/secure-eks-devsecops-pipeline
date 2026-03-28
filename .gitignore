@@ -1,28 +1,29 @@
 # --- TERRAFORM ---
-# No subir la carpeta de binarios (ocupa mucho espacio y es específica de tu Fedora)
+# Exclude local Terraform working directory (contains binaries and plugins specific to Fedora)
 .terraform/
 
-# No subir el ESTADO (Contiene información sensible de tu infraestructura en texto plano)
+# Exclude Terraform state files (These contain sensitive infrastructure data in plain text)
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
 
-# No subir el archivo de bloqueo de versiones
+# Exclude dependency lock file
 .terraform.lock.hcl
 
-# --- VARIABLES Y SECRETOS ---
-# No subir archivos donde pongas passwords, tokens o llaves
+# --- VARIABLES & SECRETS ---
+# Exclude files containing passwords, tokens, or private keys
 *.tfvars
 *.tfvars.json
 terraform.tfvars
 
-# --- LOGS Y TEMPORALES ---
+# --- LOGS & TEMPORARY FILES ---
+# Exclude execution logs and local configuration overrides
 *.log
 .terraformrc
 terraform.rc
 
-# --- AWS & LOCAL ---
-# No subir tus credenciales locales de AWS ni carpetas de entorno
+# --- CLOUD & ENVIRONMENT ---
+# Exclude local AWS credentials and virtual environments
 .aws/
 .env
 .venv/
