@@ -43,11 +43,15 @@ The following diagram illustrates the infrastructure and security layers impleme
 ---
 
 ## 📂 Project Structure (IaC)
+* `vpc.tf`: Network foundation including ( VPC, Public/Private Subnets, Internet Gateway, and NAT Gateway for secure egress).
+* `eks.tf`: Amazon EKS Cluster configuration and Managed Node Groups (EC2 Workers) definition.
+* `eks-addons.tf`: Management of critical Kubernetes extensions, specifically the Amazon **EBS CSI Driver** for storage persistence.
+* `security.tf`: Implementation of Runtime Security using **Falco** deployed via (**Helm provider**) to monitor kernel system calls.
+* `security-groups.tf`: Fine-grained firewall rules (Security Groups) for the EKS Cluster and Node communication.
+* `providers.tf`: Manages the connection to **AWS** and orchestrates the configuration for **Kubernetes** and **Helm providers**, including required versions for infrastructure consistency.
+* `variables.tf`: Input variables to make the infrastructure reusable and configurable **(Region, Cluster Name, CIDRs)**.
+* `outputs.tf`: Essential infrastructure data exported after deployment **(Cluster Endpoint, Security Group IDs, Kubeconfig details)**.
 
-* `vpc.tf`: Network definition (VPC, Subnets, NAT Gateway).
-* `eks.tf`: Cluster and Managed Node Groups configuration.
-* `eks-addons.tf`: Management of critical extensions (**EBS CSI Driver**).
-* `security.tf`: Runtime security implementation via **Falco** (Helm provider).
 
 ---
 
