@@ -4,6 +4,11 @@ module "eks" {
 
   cluster_name    = var.cluster_name
   cluster_version = "1.29"
+  # Enable IRSA
+  enable_irsa = true
+
+  # Security: Automatically grant the IAM creator admin permissions in K8s RBAC
+  enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -18,17 +23,14 @@ module "eks" {
     coredns            = { most_recent = true }
     kube-proxy         = { most_recent = true }
     vpc-cni            = { most_recent = true }
-    aws-ebs-csi-driver = { most_recent = true } # Critical for Database Persistent Volumes (PVs)
   }
-
   # Security: Automatically grant the IAM creator admin permissions in K8s RBAC
-  enable_cluster_creator_admin_permissions = true
 
   eks_managed_node_groups = {
     default = {
       min_size     = 1
-      max_size     = 2
-      desired_size = 1
+      max_size     = 3
+      desired_size = 2
 
       instance_types = ["t3.medium"]
       capacity_type  = "SPOT" # Cost-optimization for Dev environments
