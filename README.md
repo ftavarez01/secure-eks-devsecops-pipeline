@@ -6,7 +6,7 @@ This project implements a **Production-Ready DevSecOps Environment** on AWS. It 
 
 The following diagram illustrates the infrastructure and security layers implemented using Terraform. It highlights the network isolation, identity management (IRSA), and the runtime security monitoring.
 
-![EKS Secure Architecture](./images/Architecture-Diagram.jpg)
+![EKS Secure Architecture](./images/Architecture-Diagram.png)
 
 > **Note:** The architecture follows the **AWS Well-Architected Framework**, specifically focusing on the Security and Reliability pillars.
 
