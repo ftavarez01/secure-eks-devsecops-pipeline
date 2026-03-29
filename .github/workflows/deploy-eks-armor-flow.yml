@@ -46,7 +46,7 @@ jobs:
           docker push $REPO_URL:${{ github.sha }}
           docker push $REPO_URL:latest
 
-      - name: 7. Secure Deploy to Amazon EKS
+      - name: 7. Deploy to Amazon EKS Cluster PROD
         run: |
           REGISTRY="${{ secrets.ECR_REGISTRY }}"
           REPO="${{ secrets.ECR_REPOSITORY }}"
