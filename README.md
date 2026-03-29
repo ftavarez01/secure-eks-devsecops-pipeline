@@ -55,6 +55,7 @@ The following diagram illustrates the infrastructure and security layers impleme
 * `variables.tf`: Input variables to make the infrastructure reusable and configurable **(Region, Cluster Name, CIDRs)**.
 * `outputs.tf`: Essential infrastructure data exported after deployment **(Cluster Endpoint, Security Group IDs, Kubeconfig details)**.
 * `ecr.tf`: Private Container Registry ( **ECR** )
+* `kube-config.tf`: Configure kube-config for conection to AWS EKS Cluster
 
 
 ---
@@ -96,12 +97,36 @@ terraform init
 terraform apply -auto-approve
 ```
 ---
-## 9. CI/CD Setup
 
-* `Configure Secrets`: Navigate to your GitHub Repository Settings > Secrets and variables > Actions and add the following secrets:
+## 9. 🚀 CI/CD Pipeline & Security Architecture
+
+This project implements a robust **DevSecOps pipeline** using GitHub Actions to automate the software development lifecycle with a "Security-First" approach.
+
+### 🛡️ Pipeline Stages
+The automation workflow consists of the following phases:
+1. **Source Code Checkout**: Pulls the latest code from the repository.
+2. **AWS Authentication**: Securely connects to AWS using IAM roles/secrets.
+3. **Docker Build**: Builds the container image using the **Git Commit SHA** as a tag to ensure **Immutability**.
+4. **Security Scanning (Trivy)**: Scans the container image for High and Critical vulnerabilities. **The pipeline will fail** if security risks are detected, preventing insecure images from reaching production.
+5. **ECR Push**: Once verified, the image is pushed to the private Amazon ECR repository.
+
+### 🔐 GitHub Actions Secrets Configuration
+To enable the pipeline, the following **Repository Secrets** must be configured in GitHub (Settings > Secrets and variables > Actions):
+
+| Secret Name | Description |
+| :--- | :--- |
+| `AWS_ACCESS_KEY_ID` | IAM User Access Key with ECR/EKS permissions. |
+| `AWS_SECRET_ACCESS_KEY` | IAM User Secret Access Key. |
+| `AWS_REGION` | AWS Region (e.g., `us-east-1`). |
+| `ECR_REPOSITORY` | The name of the ECR repository created by Terraform (`eks-armor-flow`). |
+
+### 🕵️ Runtime Security with Falco
+For real-time intrusion detection within the EKS cluster, we deploy **Falco** via Helm:
+
 ```bash
- AWS_ACCESS_KEY_ID: Your AWS access key.
- AWS_SECRET_ACCESS_KEY: Your AWS secret key.
- ECR_REPOSITORY_URL: The URL obtained from the terraform output.
-```
-* `Trigger Deployment`: Push your code to the main branch to trigger the automated security scan and ECR deployment.
+# Add Falco Helm repository
+helm repo add falcosecurity [https://falcosecurity.github.io/charts](https://falcosecurity.github.io/charts)
+helm repo update
+
+# Install Falco in a dedicated namespace
+helm install falco falcosecurity/falco --namespace falco --create-namespace
