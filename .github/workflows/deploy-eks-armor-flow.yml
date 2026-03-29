@@ -37,10 +37,10 @@ jobs:
 
       - name: 6. Push to Amazon ECR
         run: |
-          # Construct the URL using secrets to prevent sensitive data leakage
-          REGISTRY="${{ secrets.ECR_REGISTRY }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          # Use the registry and repo directly from secrets
           REPO_URL="${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}"
           
+          echo "Pushing to: $REPO_URL"
           docker tag eks-armor-app:${{ github.sha }} $REPO_URL:${{ github.sha }}
           docker tag eks-armor-app:${{ github.sha }} $REPO_URL:latest
           docker push $REPO_URL:${{ github.sha }}
@@ -48,10 +48,15 @@ jobs:
 
       - name: 7. Secure Deploy to Amazon EKS
         run: |
-          REGISTRY="${{ secrets.ECR_REGISTRY }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          FULL_IMAGE="$REGISTRY/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}"
+          REGISTRY="${{ secrets.ECR_REGISTRY }}"
+          REPO="${{ secrets.ECR_REPOSITORY }}"
+          TAG="${{ github.sha }}"
+         
+          # Clean Construction: REGISTRY/REPO:TAG
+          # This prevents the duplicated ".dkr.ecr..." error
+          FULL_IMAGE="$REGISTRY/${REPO}:${TAG}"
           
-          # THE GOLDEN RULE: Dynamic injection into the K8s manifest
+          echo "Deploy image $FULL_IMAGE"
           sed -i "s|IMAGE_PLACEHOLDER|$FULL_IMAGE|g" k8s/deploymets-secure-app.yaml
           
           # Update Kubeconfig context and apply changes to the cluster
