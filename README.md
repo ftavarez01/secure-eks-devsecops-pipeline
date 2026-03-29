@@ -56,6 +56,7 @@ The following diagram illustrates the infrastructure and security layers impleme
 * `outputs.tf`: Essential infrastructure data exported after deployment **(Cluster Endpoint, Security Group IDs, Kubeconfig details)**.
 * `ecr.tf`: Private Container Registry ( **ECR** )
 * `kube-config.tf`: Configure kube-config for conection to AWS EKS Cluster
+* `helm_addons.tf`: installing falco security using terraform file
 
 
 ---
@@ -120,17 +121,31 @@ To enable the pipeline, the following **Repository Secrets** must be configured 
 | `AWS_REGION` | AWS Region (e.g., `us-east-1`). |
 | `ECR_REPOSITORY` | The name of the ECR repository created by Terraform (`eks-armor-flow`). |
 
-## 🦉 Runtime Security with Falco
+## 🦉 Runtime Security: Falco Deployment
 
-We use **Falco** as our runtime security tool to detect anomalous activity in the EKS cluster (e.g., shell execution inside a pod, sensitive file access).
+This project supports two methods for deploying **Falco** to the EKS cluster. However, to maintain **Infrastructure as Code (IaC)** integrity, **Terraform is the preferred and default method** for this deployment.
 
-### 🛠️ Installation (eBPF Mode)
-We deploy Falco using **Helm** with the **eBPF driver**, which is the most stable and secure method for Managed Kubernetes environments like EKS.
+### 🏗️ Method 1: Terraform (Recommended)
+The Falco deployment is fully automated via the `helm_addons.tf` configuration. This ensures that security is provisioned simultaneously with the cluster.
 
-1. **Make the installation script executable:**
-   ```bash
-   chmod +x scripts/install_falco.sh
+- **Driver:** eBPF (Modern, non-intrusive)
+- **Features:** Includes `falcosidekick` and `webui` for alert visualization.
+- **Usage:**
+  ```bash
+  terraform init
+  terraform apply
 
+### 📜 Method 2: Bash Script (Legacy/Testing)
+A utility script is provided in scripts/install_falco.sh for quick testing or standalone installations. While functional, it is not used for the main production-ready workflow of this project.
+
+Usage:
+```Bash
+
+chmod +x scripts/install_falco.sh
+./scripts/install_falco.sh
+```
+GNU Note: We chose Terraform for this project to ensure a repeatable, version-controlled security posture that automatically scales with the infrastructure.
+---
 2. ### 🌐 Networking & Exposure
 The application is exposed via a **Kubernetes Service** of type `LoadBalancer`. 
 
