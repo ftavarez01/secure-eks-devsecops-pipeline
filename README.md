@@ -120,13 +120,16 @@ To enable the pipeline, the following **Repository Secrets** must be configured 
 | `AWS_REGION` | AWS Region (e.g., `us-east-1`). |
 | `ECR_REPOSITORY` | The name of the ECR repository created by Terraform (`eks-armor-flow`). |
 
-### 🕵️ Runtime Security with Falco
-For real-time intrusion detection within the EKS cluster, we deploy **Falco** via Helm:
+## 🦉 Runtime Security with Falco
 
-```bash
-# Add Falco Helm repository
-helm repo add falcosecurity [https://falcosecurity.github.io/charts](https://falcosecurity.github.io/charts)
-helm repo update
+We use **Falco** as our runtime security tool to detect anomalous activity in the EKS cluster (e.g., shell execution inside a pod, sensitive file access).
+
+### 🛠️ Installation (eBPF Mode)
+We deploy Falco using **Helm** with the **eBPF driver**, which is the most stable and secure method for Managed Kubernetes environments like EKS.
+
+1. **Make the installation script executable:**
+   ```bash
+   chmod +x scripts/install_falco.sh
 
 # Install Falco in a dedicated namespace
 helm install falco falcosecurity/falco --namespace falco --create-namespace
