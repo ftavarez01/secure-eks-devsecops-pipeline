@@ -195,6 +195,12 @@ Bash
 sed -i "s|IMAGE_PLACEHOLDER|$FULL_IMAGE_URI|g" k8s/deployment.yaml
 ```
 --- 
+
+### 🎯 Benefits
+* `Immutability`: Every deployment is tied to a specific Git Commit SHA (e.g., sha-a1b2c3d), ensuring full traceability.
+
+* `Portability`: The same codebase can be deployed to different AWS accounts or regions just by updating the environment secrets, without changing a single line of code.
+
 ### 🌐 4. Networking & Exposure
 The application is exposed via a **Kubernetes Service** of type `LoadBalancer`. 
 
