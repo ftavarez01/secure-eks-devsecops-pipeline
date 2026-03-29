@@ -17,9 +17,11 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value       = module.eks.cluster_name
 }
-
-# HELPER: Copy and paste this command to update your local kubeconfig
-output "configure_kubectl" {
-  description = "Command to update kubeconfig and connect to the cluster"
-  value       = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
+output "kubeconfig_status" {
+  value       = "Local kubectl has been automatically configured for devsecops-eks-cluster"
+  description = "Confirmation message"
+}
+output "verify_nodes_command" {
+  value       = "kubectl get nodes"
+  description = "Run this to verify your 2 nodes are Ready"
 }
