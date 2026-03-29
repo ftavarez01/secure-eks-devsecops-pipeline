@@ -144,9 +144,37 @@ Usage:
 chmod +x scripts/install_falco.sh
 ./scripts/install_falco.sh
 ```
-GNU Note: We chose Terraform for this project to ensure a repeatable, version-controlled security posture that automatically scales with the infrastructure.
+> **GNU Note**: We chose Terraform for this project to ensure a repeatable, version-controlled security posture that automatically scales with the infrastructure.
 ---
-2. ### 🌐 Networking & Exposure
+
+## 📦 Container Lifecycle & Registry Management
+
+To ensure a secure and consistent deployment, we follow a strict workflow for building and pushing images to **Amazon ECR**.
+
+### 🔐 1. Authentication & Security
+Before interacting with the private registry, we authenticate the local Docker daemon using the AWS CLI. This ensures that only authorized entities can push images to our "Vault".
+
+```bash
+aws ecr get-login-password --region us-east-1 | \
+docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+```
+### 🏗️ 2. Build & Strategy
+
+The application is built using a multi-stage-ready Dockerfile (using python:3.12-slim for a reduced attack surface). We use specific tagging to maintain version control:
+
+* `Local Build`: docker build -t eks-armor-flow.
+* `Remote Tagging`: Tagging the image with the full ECR URI to point to our private repository.
+
+* `Push`: Offloading the image layers to AWS.
+
+### 📑 3. Image Architecture (Manifests)
+
+Upon successful push, Amazon ECR generates an Image Index. This allows the EKS cluster to pull the correct architecture (e.g., amd64) based on the Node Group configuration.
+
+* `Immutability`: Images are stored with specific digests (SHA256) to ensure that the code running in production is exactly what was scanned by Trivy during the CI/CD phase.
+---
+  
+### 🌐 4. Networking & Exposure
 The application is exposed via a **Kubernetes Service** of type `LoadBalancer`. 
 
 - **Internal Port:** 80
