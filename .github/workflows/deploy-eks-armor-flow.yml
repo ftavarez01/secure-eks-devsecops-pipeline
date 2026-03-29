@@ -52,7 +52,7 @@ jobs:
           FULL_IMAGE="$REGISTRY/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}"
           
           # THE GOLDEN RULE: Dynamic injection into the K8s manifest
-          sed -i "s|IMAGE_PLACEHOLDER|$FULL_IMAGE|g" k8s/deployment.yaml
+          sed -i "s|IMAGE_PLACEHOLDER|$FULL_IMAGE|g" k8s/deploymets-secure-app.yaml
           
           # Update Kubeconfig context and apply changes to the cluster
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
