@@ -38,8 +38,8 @@ jobs:
       - name: 6. Push to Amazon ECR
         run: |
           # Construct the URL using secrets to prevent sensitive data leakage
-          REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          REPO_URL="$REGISTRY/${{ secrets.ECR_REPOSITORY }}"
+          REGISTRY="${{ secrets.ECR_REGISTRY }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          REPO_URL="${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}"
           
           docker tag eks-armor-app:${{ github.sha }} $REPO_URL:${{ github.sha }}
           docker tag eks-armor-app:${{ github.sha }} $REPO_URL:latest
@@ -48,7 +48,7 @@ jobs:
 
       - name: 7. Secure Deploy to Amazon EKS
         run: |
-          REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          REGISTRY="${{ secrets.ECR_REGISTRY }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
           FULL_IMAGE="$REGISTRY/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}"
           
           # THE GOLDEN RULE: Dynamic injection into the K8s manifest
