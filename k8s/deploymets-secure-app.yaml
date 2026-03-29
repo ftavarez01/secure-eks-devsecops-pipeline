@@ -14,13 +14,46 @@ spec:
       labels:
         app: secure-app
     spec:
+      # Pod Level Security force ID -> 1000
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+
       containers:
       - name: secure-app-container
-        # We use a placeholder to avoid leaking the AWS Account ID in a public repo
         image: IMAGE_PLACEHOLDER
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        
+        # Container Level Security
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            
+        env:
+        - name: PYTHONPYCACHEPREFIX
+          value: "/tmp/.pycache"
+
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: home-tmp
+          mountPath: /home/appuser/.local # Temporal library file
+
         resources:
           limits:
             cpu: "200m"
             memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: home-tmp
+        emptyDir: {}
