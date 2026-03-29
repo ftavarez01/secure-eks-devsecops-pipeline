@@ -131,5 +131,14 @@ We deploy Falco using **Helm** with the **eBPF driver**, which is the most stabl
    ```bash
    chmod +x scripts/install_falco.sh
 
-# Install Falco in a dedicated namespace
-helm install falco falcosecurity/falco --namespace falco --create-namespace
+2. ### 🌐 Networking & Exposure
+The application is exposed via a **Kubernetes Service** of type `LoadBalancer`. 
+
+- **Internal Port:** 80
+- **External Port:** 80
+- **Cloud Integration:** Automatically provisions an **AWS Classic Load Balancer (CLB)**.
+
+To retrieve the public DNS endpoint, run:
+```bash
+kubectl get svc secure-app-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
