@@ -173,7 +173,28 @@ Upon successful push, Amazon ECR generates an Image Index. This allows the EKS c
 
 * `Immutability`: Images are stored with specific digests (SHA256) to ensure that the code running in production is exactly what was scanned by Trivy during the CI/CD phase.
 ---
-  
+
+### 🛡️ 4.Security & Secret Management (The Golden Rule)
+
+In this project, we strictly adhere to the DevSecOps principle: **"Never hardcode secrets or Account IDs in the source code."** To protect the infrastructure and maintain a portable codebase, we implement **Dynamic Injection** via GitHub Secrets.
+
+### 🔐 Secret Masking
+Sensitive identifiers such as `AWS_ACCOUNT_ID`, `AWS_ACCESS_KEY`, and `ECR_REPOSITORY` are stored in **GitHub Actions Secrets**. This ensures:
+- **Zero Exposure:** Account IDs are masked in CI/CD logs with `***`.
+- **Governance:** Only authorized users with repository access can view or modify these variables.
+
+### 🚀 Dynamic Deployment with `sed`
+Instead of hardcoding the image URI in our Kubernetes manifests (`k8s/deploymets-secure-app.yaml`), we use a placeholder:
+
+```yaml
+# k8s/deployment.yaml
+image: IMAGE_PLACEHOLDER
+During the Continuous Deployment (CD) phase, the pipeline dynamically replaces this placeholder using the current commit SHA:
+
+Bash
+sed -i "s|IMAGE_PLACEHOLDER|$FULL_IMAGE_URI|g" k8s/deployment.yaml
+```
+--- 
 ### 🌐 4. Networking & Exposure
 The application is exposed via a **Kubernetes Service** of type `LoadBalancer`. 
 
