@@ -51,6 +51,7 @@ The following diagram illustrates the infrastructure and security layers impleme
 * `providers.tf`: Manages the connection to **AWS** and orchestrates the configuration for **Kubernetes** and **Helm providers**, including required versions for infrastructure consistency.
 * `variables.tf`: Input variables to make the infrastructure reusable and configurable **(Region, Cluster Name, CIDRs)**.
 * `outputs.tf`: Essential infrastructure data exported after deployment **(Cluster Endpoint, Security Group IDs, Kubeconfig details)**.
+* `ecr.tf`: Private Container Registry ( **ECR** )
 
 
 ---
