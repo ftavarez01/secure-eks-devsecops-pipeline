@@ -20,11 +20,11 @@ variable "environment" {
   description = "Deployment environment (dev/prod)"
   type        = string
   default     = "dev"
-}                                       
+}
 
 variable "kubeconfig" {
   description = "Run this command to configure local kubectl access to the EKS cluster"
-  type = string
-  default = "aws eks update-kubeconfig --region us-east-1 --name devsecops-eks-cluster"
-  
+  type        = string
+  default     = "aws eks update-kubeconfig --region us-east-1 --name devsecops-eks-cluster"
+
 }

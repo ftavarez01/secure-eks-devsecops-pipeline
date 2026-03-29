@@ -20,9 +20,9 @@ module "eks" {
 
   # Essential add-ons for cluster networking and storage persistence
   cluster_addons = {
-    coredns            = { most_recent = true }
-    kube-proxy         = { most_recent = true }
-    vpc-cni            = { most_recent = true }
+    coredns    = { most_recent = true }
+    kube-proxy = { most_recent = true }
+    vpc-cni    = { most_recent = true }
   }
   # Security: Automatically grant the IAM creator admin permissions in K8s RBAC
 
